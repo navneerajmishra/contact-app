@@ -1,13 +1,20 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
+import { API_URL } from './api-url';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({
-      runCoalescing: false // We will use OnPush change detection strategy with Signals
+      eventCoalescing: true
     }),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
+    provideHttpClient(),
+    {
+      provide: API_URL, useValue: environment.apiUrl
+    }
   ]
 };
