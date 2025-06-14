@@ -1,0 +1,33 @@
+
+<table class="table-auto">
+    <thead>
+        <tr>
+            @for (field of fieldsToDisplay(); track field) {
+            
+                <th>
+                    {{ field.name }}
+                </th>
+                <!-- Filter & sort action buttons -->
+           
+            }
+        </tr>
+        
+    </thead>
+    <tbody>
+
+        @for(value of values(); track value) {
+            <tr (click)="onClick(value, $event)">
+                @for (field of fieldsToDisplay(); track field) {
+                    <td>
+                        {{ value[field.id] }}
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<ca-paginator
+    [options]="paginationOptions()"
+    (pageChange)="pageChange.emit($event)">
+</ca-paginator>

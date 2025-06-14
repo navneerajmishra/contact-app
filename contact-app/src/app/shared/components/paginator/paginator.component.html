@@ -1,0 +1,16 @@
+@let _currentPage = options()?.pageNumber;
+@let _totalPages = totalPages();
+@if (_currentPage && _totalPages) {
+    <button
+        [disabled]="_currentPage === 1"
+        (click)="pageChanged(_currentPage - 1)">
+        &#8592;
+    </button>
+    <span>{{ _currentPage }} of {{ _currentPage }}</span>
+    <button
+        [disabled]="_currentPage === _totalPages"
+        (click)="pageChanged(_currentPage + 1)">
+        &#8594;
+    </button>
+}
+
