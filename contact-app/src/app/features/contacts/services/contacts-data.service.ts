@@ -13,30 +13,25 @@ import { ContactsStore } from '../../../store/store/contacts-store';
 })
 export class ContactsDataService {
     readonly #store = inject(ContactsStore);
-    readonly #filters: WritableSignal<{
-        sort: {
-            fieldId: string;
-            order: 'asc' | 'desc';
-        };
-        filter: string;
-    }> = signal({
-        filter: '',
-        sort: {
-            fieldId: 'firstName',
-            order: 'asc',
-        },
-    });
-    constructor() {}
+    readonly #searchString: WritableSignal<string> = signal('');
+    constructor() {
+
+    }
     filteredContactList = computed(() => {
         const contacts = this.#store.contactEntities();
-        const filter = this.#filters();
-        if (!filter) {
-            return;
+        const searchString = this.#searchString();
+        console.log(searchString);
+        if (!searchString) {
+            
+            
+            return contacts;
         }
-        contacts.filter((contact) => {
-            Object.values(contact).some(
-                (c) => typeof c === 'string' && c.includes(filter.filter)
-            );
-        });
+        return contacts.filter((contact) => 
+            [contact.firstName, contact.lastName, contact.email].some(v => v?.includes(searchString)));
     });
+
+    updateSearchString(searchString: string) {
+        this.#searchString.update(() => searchString);
+    }
+
 }

@@ -7,7 +7,8 @@
         [values]="contacts"
         [paginationOptions]="paginationOptions()"
         (rowClick)="onRowClick($event)"
-        (pageChange)="onPageChange($event)">
+        (pageChange)="onPageChange($event)"
+        (searchChange)="onSearchChange($event)">
     </ca-table>
 }
 
