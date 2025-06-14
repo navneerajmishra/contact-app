@@ -1,0 +1,14 @@
+@let contacts = contactsList();
+<button (click)="createContact()">Create new</button>
+
+@if (loadingStatus() === 'fulfilled') {
+    <ca-table 
+        [fields]="columns()"
+        [values]="contacts"
+        [paginationOptions]="paginationOptions()"
+        (rowClick)="onRowClick($event)"
+        (pageChange)="onPageChange($event)">
+    </ca-table>
+}
+
+<ca-loading-indicator [requestStatus]="loadingStatus()" />
