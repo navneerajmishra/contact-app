@@ -1,14 +1,19 @@
-@let contacts = contactsList();
+@let contacts = paginatedContacts();
 <button (click)="createContact()">Create new</button>
 
 @if (loadingStatus() === 'fulfilled') {
-    <ca-table 
+    <ca-table
+        [key]="'id'"
         [fields]="columns()"
         [values]="contacts"
+        [totalRecords]="filteredContactList().length"
         [paginationOptions]="paginationOptions()"
+        [sortOption]="sortOption()"
+        [(searchString)]="searchString"
         (rowClick)="onRowClick($event)"
         (pageChange)="onPageChange($event)"
-        (searchChange)="onSearchChange($event)">
+        (searchChange)="onSearchChange($event)"
+        (sortChange)="onSortChange($event)">
     </ca-table>
 }
 

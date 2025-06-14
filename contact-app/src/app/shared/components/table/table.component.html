@@ -1,35 +1,61 @@
-<div class="flex flex-row-reverse p-3">
-    <input class="border" type="text" name="search" id="search" [(ngModel)]="searchString" />
+<div class="flex flex-row justify-between p-3">
+    @let _totalRecords = totalRecords();
+    {{ _totalRecords }}
+    @if (_totalRecords <= 1) { record } @else { records } found
+    <input
+        class="border"
+        type="text"
+        name="search"
+        id="search"
+        [(ngModel)]="searchString"
+    />
 </div>
+
 <table class="table-auto">
     <thead>
         <tr>
             @for (field of fieldsToDisplay(); track field) {
-            
-                <th>
-                    {{ field.name }}
-                </th>
-                <!-- Filter & sort action buttons -->
-           
+
+            <th
+                class="justify-between"
+                [caClickable]="field.isSortable"
+                (caClick)="sort(field)"
+            >
+                <span>{{ field.name }}</span>
+                @if (sortOption()?.field === field.id) { @if
+                (sortOption()?.order === 'asc') {
+                <span>&darr;</span>
+                } @else {
+                <span>&uarr;</span>
+                } }
+            </th>
             }
+            <!-- Action buttons -->
+            <th></th>
         </tr>
-        
     </thead>
     <tbody>
-
         @for(value of values(); track value) {
-            <tr (click)="onClick(value, $event)">
-                @for (field of fieldsToDisplay(); track field) {
-                    <td>
-                        {{ value[field.id] }}
-                    </td>
-                }
-            </tr>
+        <tr>
+            @for (field of fieldsToDisplay(); track field) {
+            <td>
+                {{ value[field.id] }}
+            </td>
+            }
+            <td>
+                <button (click)="onUpdate(value, $event)">Update</button>
+                <button (click)="onDelete(value, $event)">Delete</button>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
 
+@if (totalRecords(); as total) {
 <ca-paginator
     [options]="paginationOptions()"
-    (pageChange)="pageChange.emit($event)">
+    [total]="totalRecords()"
+    (pageChange)="pageChange.emit($event)"
+>
 </ca-paginator>
+}

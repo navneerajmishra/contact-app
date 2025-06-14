@@ -20,7 +20,7 @@ interface ContactApiModel {
     company?: string;
     //
     job_title?: string;
-    createdOn?: Date;
+    created_on?: Date;
 }
 
 @Injectable({
@@ -40,12 +40,14 @@ export class ContactsService {
                         first_name,
                         last_name,
                         job_title,
+                        created_on,
                         ...contacts
                     }): Contact => ({
                         ...contacts,
                         firstName: first_name,
                         lastName: last_name,
                         jobTitle: job_title,
+                        createdOn: created_on,
                     })
                 )
             )

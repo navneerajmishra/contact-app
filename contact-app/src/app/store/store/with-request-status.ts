@@ -1,11 +1,7 @@
 import { computed } from '@angular/core';
 import { signalStoreFeature, withComputed, withState } from '@ngrx/signals';
+import { RequestStatus } from '@shared/models';
 
-export type RequestStatus =
-  | 'idle'
-  | 'pending'
-  | 'fulfilled'
-  | 'error';
 export type RequestStatusState = { requestStatus: RequestStatus, errorMessage?: string };
 
 export function setPending(): RequestStatusState {

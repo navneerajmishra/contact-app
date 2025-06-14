@@ -4,17 +4,17 @@ import {
     Signal,
     computed,
     inject,
-    input,
     signal,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Field, LoadingIndicatorComponent, PaginationOption, TableComponent } from '@shared/components';
+import { LoadingIndicatorComponent, TableComponent } from '@shared/components';
 import { ContactsStore } from '@store/store';
 import { Contact } from '@store/model';
-import { ContactsDataService } from '../../services/contacts-data.service';
+import { filterMap, sortByStringField } from '@shared/utilities';
+import { Field, PaginationOption, SortOption, SortOrder } from '@shared/models';
 
-type ContactsViewModel = {
+export type ContactsViewModel = {
     id: string;
     name: string;
     jobTitle?: string;
@@ -22,6 +22,7 @@ type ContactsViewModel = {
     phone: string;
     email?: string;
     avatar?: string;
+    createdOn?: Date;
 };
 
 @Component({
@@ -30,88 +31,176 @@ type ContactsViewModel = {
     templateUrl: './contact-list.component.html',
     styleUrl: './contact-list.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [ContactsDataService]
 })
 export class ContactListComponent {
-    readonly pno = input<number>(1);
     readonly #store = inject(ContactsStore);
-    readonly #dataService = inject(ContactsDataService);
     readonly #router = inject(Router);
-    protected readonly contactsList: Signal<ContactsViewModel[]>;
-    protected readonly columns: Signal<Field[]> = signal([
+    readonly #activatedRoute = inject(ActivatedRoute);
+
+    protected readonly columns: Signal<Field<ContactsViewModel>[]> = signal([
         {
             id: 'id',
             name: 'Id',
+            type: 'string',
             isHidden: true,
+            isSortable: false,
         },
         {
             id: 'name',
             name: 'Name',
+            type: 'string',
             isHidden: false,
+            isSortable: true,
         },
         {
             id: 'company',
             name: 'Company',
+            type: 'string',
             isHidden: false,
+            isSortable: false,
         },
         {
             id: 'phone',
             name: 'Phone',
+            type: 'string',
             isHidden: false,
+            isSortable: false,
         },
         {
             id: 'email',
             name: 'email',
+            type: 'string',
             isHidden: false,
+            isSortable: true,
         },
         {
             id: 'jobTitle',
             name: 'Job title',
+            type: 'string',
             isHidden: false,
+            isSortable: false,
+        },
+        {
+            id: 'createdOn',
+            name: 'Created On',
+            type: 'date',
+            isHidden: false,
+            isSortable: true,
         },
     ]);
-    protected readonly paginationOptions: Signal<PaginationOption> = computed(() => ({
-        pageNumber: this.pno(),
-        total: this.contactsList().length
-    }));
 
     protected loadingStatus = this.#store.requestStatus;
+    protected readonly searchString = signal<string>('');
+    protected readonly paginationOptions = signal<PaginationOption>({
+        pageNumber: 1,
+        pageSize: 10,
+    });
+    protected readonly sortOption = signal<SortOption<ContactsViewModel>>({
+        field: 'name',
+        order: 'asc',
+    });
+
+    protected readonly filteredContactList: Signal<ContactsViewModel[]> =
+        computed(() => {
+            const contacts = this.#store.contactEntities();
+            const searchString = this.searchString().toLowerCase().trim();
+            return filterMap<Contact, ContactsViewModel>(
+                contacts,
+                (contact): ContactsViewModel | undefined => {
+                    const valuesToCompare = [
+                        contact.firstName,
+                        contact.lastName,
+                        contact.email,
+                    ];
+                    return !searchString ||
+                        valuesToCompare.some((value) =>
+                            value?.toLowerCase().includes(searchString)
+                        )
+                        ? {
+                              id: contact.id,
+                              company: contact.company ?? '',
+                              jobTitle: contact.jobTitle ?? '',
+                              name: `${contact.firstName} ${
+                                  contact.lastName ?? ''
+                              }`,
+                              phone: contact.phone,
+                              email: contact.email,
+                          }
+                        : undefined;
+                }
+            );
+        });
+
+    readonly #sortedContactList: Signal<ContactsViewModel[]> = computed(() => {
+        const sortOption = this.sortOption();
+
+        return sortByStringField(
+            this.filteredContactList(),
+            sortOption.field as keyof ContactsViewModel,
+            sortOption.order
+        );
+    });
+
+    protected readonly paginatedContacts: Signal<ContactsViewModel[]> =
+        computed(() => {
+            const { pageNumber, pageSize } = this.paginationOptions();
+
+            return this.#sortedContactList().slice(
+                (pageNumber - 1) * pageSize,
+                pageNumber * pageSize
+            );
+        });
 
     constructor() {
-        this.contactsList = computed(() => {
-            const contacts = this.#dataService.filteredContactList();
-            return (contacts ?? []).map(
-                (c): ContactsViewModel => ({
-                    id: c.id,
-                    company: c.company ?? '',
-                    jobTitle: c.jobTitle ?? '',
-                    name: `${c.firstName} ${c.lastName ?? ''}`,
-                    phone: c.phone,
-                    email: c.email
-                })
-            );
+        this.#activatedRoute.queryParamMap.subscribe((params) => {
+            const pageNumber = params.get('pn') ?? 1;
+            const pageSize = params.get('ps') ?? 10;
+            const sortOrder = params.get('so') as SortOrder | null;
+            this.paginationOptions.set({
+                pageNumber: Number(pageNumber),
+                pageSize: Number(pageSize),
+            });
+            this.sortOption.update((previousValue) => ({
+                field: (params.get('sb') ?? previousValue.field) as keyof ContactsViewModel,
+                order: sortOrder ?? previousValue.order,
+            }));
+            this.searchString.set(params.get('ss') ?? '');
         });
     }
 
-    createContact() {
+    protected createContact() {
         this.#router.navigate(['/', 'new']);
     }
 
-    onRowClick(data: {data: Contact; sourceEvent: Event}) {
+    protected onRowClick(data: { data: ContactsViewModel }) {
         // Todo open view contact detail component
         this.#router.navigate(['/', 'edit', data.data.id]);
     }
 
-    onPageChange(pageNumber: number) {
-        this.#router.navigate(['/', 'contacts'], {
-            queryParams: {
-                pno: pageNumber
-            },
-            queryParamsHandling: 'merge'
+    protected onPageChange(pageNumber: number | null) {
+        this.#updateQueryParams({
+            pn: pageNumber,
         });
     }
 
-    onSearchChange(searchString: string) {
-        this.#dataService.updateSearchString(searchString);
+    protected onSearchChange(searchString: string) {
+        this.#updateQueryParams({
+            ss: searchString?.trim(),
+        });
+    }
+
+    protected onSortChange(sortOption: SortOption<ContactsViewModel>) {
+        this.#updateQueryParams({
+            sb: sortOption.field,
+            so: sortOption.order,
+        });
+    }
+
+    #updateQueryParams(queryParams: Params) {
+        this.#router.navigate([], {
+            relativeTo: this.#activatedRoute,
+            queryParams,
+            queryParamsHandling: 'merge',
+        });
     }
 }

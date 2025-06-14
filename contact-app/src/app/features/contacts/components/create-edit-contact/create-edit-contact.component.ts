@@ -25,7 +25,6 @@ export class CreateEditContactComponent {
 
     readonly selectedContact = computed(() => {
         const contactId = this.id();
-        console.log(contactId);
         
         return contactId
             ? untracked(() => this.#store.contactEntityMap()[contactId])
@@ -55,7 +54,6 @@ export class CreateEditContactComponent {
     constructor() {
         effect(() => {
             const contact = this.selectedContact();
-            console.log(contact);
             
             if (!contact) {
                 return;
