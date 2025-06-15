@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { API_URL } from '../../../api-url';
-import { Contact } from '../../../store/model/contact';
+import { Contact, Phone } from '../../../store/model/contact';
 import { Observable, map, tap } from 'rxjs';
 
 interface ContactApiModel {
@@ -41,6 +41,7 @@ export class ContactsService {
                         last_name,
                         job_title,
                         created_on,
+                        phone,
                         ...contacts
                     }): Contact => ({
                         ...contacts,
@@ -48,6 +49,7 @@ export class ContactsService {
                         lastName: last_name,
                         jobTitle: job_title,
                         createdOn: created_on,
+                        phone: this.getPhoneNumber(phone)
                     })
                 )
             )
@@ -67,5 +69,13 @@ export class ContactsService {
 
     deleteContact(id: string): Observable<unknown> {
         return this.#http.delete(`${this.#baseUrl}/${id}`);
+    }
+
+    getPhoneNumber(phoneNumberWithExtension: string): Phone {
+        const [number, extension] = phoneNumberWithExtension?.split('x');
+        return {
+            number: (number ?? '').trim(),
+            extension: (extension ?? '').trim(),
+        }
     }
 }

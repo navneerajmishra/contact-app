@@ -17,10 +17,17 @@
         <label for="lastName">Last name</label>
         <input caFormFieldError class="border rounded w-4/12 py-1 px-2 placeholder:text-gray-300 placeholder:italic" type="text" id="lastName" formControlName="lastName" placeholder="e.g. Hendricks">
     </div>
-    <div class="flex flex-col gap-4">
-        <label for="phone">Phone</label>
-        <input caFormFieldError class="border rounded w-4/12 py-1 px-2 placeholder:text-gray-300 placeholder:italic" type="tel" id="phone" formControlName="phone" placeholder="e.g. 1-594-913-9901">
-    </div>
+    <ng-container formGroupName="phone">
+        <div class="flex flex-col gap-4">
+            <label for="number">Phone</label>
+            <input caFormFieldError class="border rounded w-4/12 py-1 px-2 placeholder:text-gray-300 placeholder:italic" type="tel" id="number" formControlName="number" placeholder="e.g. 1-594-913-9901">
+        </div>
+        <div class="flex flex-col gap-4">
+            <label for="extension">Extension</label>
+            <input caFormFieldError class="border rounded w-4/12 py-1 px-2 placeholder:text-gray-300 placeholder:italic" type="tel" id="extension" formControlName="extension" placeholder="e.g. 2345">
+        </div>
+    </ng-container>
+    
     <div class="flex flex-col gap-4">
         <label for="email">Email</label>
         <input caFormFieldError class="border rounded w-4/12 py-1 px-2 placeholder:text-gray-300 placeholder:italic" type="email" id="email" formControlName="email" placeholder="e.g. richard.hendricks@hooli.com">
@@ -35,11 +42,8 @@
     </div>
     <div class="flex flex-col gap-4">
         <label for="profilePicture">Profile picture</label>
-        <input caFormFieldError class="border rounded w-1/2 py-1 px-2 placeholder:text-gray-300 placeholder:italic" type="text" id="profilePicture" formControlName="profilePicture" placeholder="e.g. http://www.hooli.com/images/richard.jpg">
-        @if (contactForm.get('profilePicture')?.valid) {
-            <img class="rounded-full" [src]="contactForm.get('profilePicture')?.value"
-            (error)="onImageError()" alt="" width="100" height="100" >
-        }
+        <input caFormFieldError class="border rounded w-1/2 py-1 px-2 placeholder:text-gray-300 placeholder:italic" type="text" id="profilePicture" formControlName="avatar" placeholder="e.g. http://www.hooli.com/images/richard.jpg">
+        <ca-avatar [name]="contactName()" [imageUrl]="contactForm.get('avatar')?.value ?? ''"></ca-avatar>
     </div>
 
     <div class="flex flex-row-reverse gap-6"> {{contactForm.invalid}}

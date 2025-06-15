@@ -13,6 +13,7 @@ import { ContactsStore } from '@store/store';
 import { Contact } from '@store/model';
 import { filterMap, sortByStringField } from '@shared/utilities';
 import { Field, PaginationOption, SortOption, SortOrder } from '@shared/models';
+import { ConfirmDialogService } from '@shared/services';
 
 export type ContactsViewModel = {
     id: string;
@@ -36,6 +37,7 @@ export class ContactListComponent {
     readonly #store = inject(ContactsStore);
     readonly #router = inject(Router);
     readonly #activatedRoute = inject(ActivatedRoute);
+    readonly #confirm = inject(ConfirmDialogService);
 
     protected readonly columns: Signal<Field<ContactsViewModel>[]> = signal([
         {
@@ -123,7 +125,7 @@ export class ContactListComponent {
                               name: `${contact.firstName} ${
                                   contact.lastName ?? ''
                               }`,
-                              phone: contact.phone,
+                              phone: contact.phone.extension ? `${contact.phone.number} x${contact.phone.extension}` : contact.phone.number,
                               email: contact.email,
                           }
                         : undefined;
@@ -161,7 +163,8 @@ export class ContactListComponent {
                 pageSize: Number(pageSize),
             });
             this.sortOption.update((previousValue) => ({
-                field: (params.get('sb') ?? previousValue.field) as keyof ContactsViewModel,
+                field: (params.get('sb') ??
+                    previousValue.field) as keyof ContactsViewModel,
                 order: sortOrder ?? previousValue.order,
             }));
             this.searchString.set(params.get('ss') ?? '');
@@ -173,6 +176,11 @@ export class ContactListComponent {
     }
 
     protected onRowClick(data: { data: ContactsViewModel }) {
+        // Todo open view contact detail component
+        this.#router.navigate(['/', 'contacts', data.data.id]);
+    }
+
+    protected onUpdate(data: { data: ContactsViewModel }) {
         // Todo open view contact detail component
         this.#router.navigate(['/', 'edit', data.data.id]);
     }
@@ -194,6 +202,17 @@ export class ContactListComponent {
             sb: sortOption.field,
             so: sortOption.order,
         });
+    }
+
+    protected async onDelete(data: { data: ContactsViewModel }) {
+        const confirmed = await this.#confirm.confirm(
+            `Delete ${data.data.name}`,
+            'Are you sure you want to delete this contact?'
+        );
+        if (confirmed) {
+            // TODO: Implement delete
+            console.log('Deleting...');
+        }
     }
 
     #updateQueryParams(queryParams: Params) {

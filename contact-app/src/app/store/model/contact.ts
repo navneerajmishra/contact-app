@@ -6,10 +6,15 @@
 
 //export type ContactId = string;
 
+export type Phone = {
+    number: string;
+    extension: string;
+};
+
 export type Contact = {
     id: string;
     // req, min
-    phone: string; // TODO: Could be of type PhoneNumber
+    phone: Phone; // TODO: Could be of type PhoneNumber
     // req, 
     firstName: string;
     // 

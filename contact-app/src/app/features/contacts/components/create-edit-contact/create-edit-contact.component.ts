@@ -9,12 +9,12 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormFieldErrorDirective } from '@shared/directives';
-import { validateImageUrl } from '@shared/validators';
 import { ContactsStore } from '@store/store';
+import { AvatarComponent } from "../../../../shared/components/avatar/avatar.component";
 
 @Component({
     selector: 'ca-create-edit-contact',
-    imports: [CommonModule, ReactiveFormsModule, FormFieldErrorDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormFieldErrorDirective, AvatarComponent],
     templateUrl: './create-edit-contact.component.html',
     styleUrl: './create-edit-contact.component.css',
 })
@@ -31,25 +31,25 @@ export class CreateEditContactComponent {
             : null;
     });
 
-
-
     protected readonly contactForm = this.#formBuilder.group({
         firstName: ['', [
             Validators.required,
             Validators.minLength(3),
         ]],
         lastName: [''],
-        phone: ['', [
-            Validators.required,
-            Validators.minLength(10),
-        ]],
+        phone: this.#formBuilder.group({
+            number: ['', [Validators.pattern(/^(?:1[-\s]?)?(?:\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/)]],
+            extension: ['', [Validators.maxLength(5), Validators.pattern(/^\d{1,5}$/)]],
+        }),
         email: ['', [
-            Validators.email,
+            Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
         ]],
         company: [''],
         jobTitle: [''],
-        profilePicture: ['', [], [validateImageUrl()]] // TODO: URL validator
+        avatar: ['', [Validators.pattern(/^(https?:\/\/)?(www\.)?[\w\-]+(\.[\w\-]+)+(:\d+)?(\/[^\s]*)?(\?[^\s]*)?(#[^\s]*)?$/)]]
     });
+
+    contactName = computed(() => `${this.contactForm.get('firstName')?.value ?? ''} ${this.contactForm.get('lastName')?.value ?? ''}`.trim())
 
     constructor() {
         effect(() => {

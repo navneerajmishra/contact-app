@@ -1,0 +1,28 @@
+@if (selectedContact(); as _contact) {
+    <div class="flex">
+        <ca-avatar [size]="'lg'" [imageUrl]="_contact.avatar" [name]="_contact.firstName"></ca-avatar>
+        <h1>{{ _contact.firstName }}</h1>
+    </div>
+
+    <div class="flex flex-col gap-4">
+        <div class="flex flex-row gap-4">
+            <span>Phone</span>
+            <span>{{ _contact.phone.number }} x{{ _contact.phone.extension }}</span>
+        </div>
+        <div class="flex">
+            <span>Company</span>
+            <span>{{ _contact.company }}</span>
+        </div>
+        <div class="flex">
+            <span>Email</span>
+            <span>{{ _contact.email }}</span>
+        </div>
+        <div class="flex">
+            <span>Job title</span>
+            <span>{{ _contact.jobTitle }}</span>
+        </div>
+    </div>
+}
+
+
+
