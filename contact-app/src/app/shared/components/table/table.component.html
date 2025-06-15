@@ -36,7 +36,7 @@
     </thead>
     <tbody>
         @for(value of values(); track value) {
-        <tr>
+        <tr (click)="onRowClick(value)">
             @for (field of fieldsToDisplay(); track field) {
             <td>
                 {{ value[field.id] }}

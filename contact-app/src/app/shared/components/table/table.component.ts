@@ -72,6 +72,10 @@ export class TableComponent<T> {
         this.delete.emit({ data: value });
     }
 
+    onRowClick(value: T) {
+        this.rowClick.emit({ data: value });
+    }
+
     sort(field: Field<T>) {
         const currentlyAppliedSortOption = this.sortOption();
         // If currently applied sort field and clicked field is same, toggle sort order

@@ -1,0 +1,9 @@
+<div class="backdrop" (click)="close(false)"></div>
+<div class="dialog">
+    <h2>{{ title() }}</h2>
+    <p>{{ message() }}</p>
+    <div class="actions">
+        <button (click)="close(false)">Cancel</button>
+        <button (click)="close(true)">Confirm</button>
+    </div>
+</div>
