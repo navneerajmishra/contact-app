@@ -33,6 +33,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/contact-app/",
               "budgets": [
                 {
                   "type": "initial",
