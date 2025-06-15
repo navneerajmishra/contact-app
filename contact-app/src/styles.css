@@ -9,3 +9,24 @@ body {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.xs {
+    @apply size-8;
+}
+
+.sm {
+    @apply size-8;
+}
+
+.md {
+    @apply size-10;
+}
+
+.lg {
+    @apply size-20;
+}
+
+.xl {
+    @apply size-36;
+}
+

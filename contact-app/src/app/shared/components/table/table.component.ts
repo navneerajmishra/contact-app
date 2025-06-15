@@ -27,7 +27,7 @@ export type ValueType<T> = T[];
     templateUrl: './table.component.html',
     styleUrl: './table.component.css',
     host: {
-        class: 'flex flex-col w-full',
+        class: 'flex flex-col w-full overflow-hidden',
     },
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -49,6 +49,7 @@ export class TableComponent<T> {
     readonly update = output<{ data: T }>();
     readonly delete = output<{ data: T }>();
 
+    // TODO: This is not needed, as we can use `fields` directly in the template.
     fieldsToDisplay = computed(() => this.fields().filter((f) => !f.isHidden));
 
     constructor() {

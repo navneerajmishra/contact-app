@@ -1,61 +1,117 @@
-<div class="flex flex-row justify-between p-3">
-    @let _totalRecords = totalRecords();
-    {{ _totalRecords }}
-    @if (_totalRecords <= 1) { record } @else { records } found
-    <input
-        class="border"
-        type="text"
-        name="search"
-        id="search"
-        [(ngModel)]="searchString"
-    />
+<div class="p-4 bg-white sticky top-0 flex flex-row-reverse">
+    <label for="table-search" class="sr-only">Search</label>
+    <div class="relative mt-1">
+        <div
+            class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
+        >
+            <svg
+                class="w-4 h-4 text-gray-500"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+            >
+                <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+            </svg>
+        </div>
+        <input
+            [(ngModel)]="searchString"
+            type="text"
+            id="table-search"
+            class="block py-2 ps-10 pe-3 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Search for items"
+        />
+    </div>
+</div>
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table
+        class="w-full text-sm text-left rtl:text-right text-gray-500"
+    >
+        <thead
+            class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50"
+        >
+            <tr>
+                @for (field of fieldsToDisplay(); track field) {
+
+                <th
+                    scope="col"
+                    class="px-6 py-3"
+                    [caClickable]="field.isSortable"
+                    (caClick)="sort(field)"
+                >
+                    <span class="flex items-center" [ngClass]="{'text-gray-800' : sortOption()?.field === field.id}">
+                        {{ field.name }}
+                        @if (field.isSortable) { &nbsp;
+                        <svg
+                            class="w-4 h-4 ms-1"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="m8 15 4 4 4-4m0-6-4-4-4 4"
+                            />
+                        </svg>
+                        }
+                    </span>
+                </th>
+                }
+                <!-- Action buttons -->
+                <th scope="col" class="px-6 py-3">Action</th>
+            </tr>
+        </thead>
+        <tbody class="overflow-auto">
+            @for(value of values(); track value) {
+            <tr
+                [caClickable]="true"
+                (caClick)="onRowClick(value)"
+                class="bg-white border-b border-gray-200 hover:bg-gray-50"
+            >
+                @for (field of fieldsToDisplay(); track field) {
+                <td class="px-6 py-4" [ngClass]="{'text-gray-700' : sortOption()?.field === field.id}">
+                    {{ value[field.id] }}
+                </td>
+                }
+                <td class="px-6 py-4 divide-x">
+                    <a
+                        role="button"
+                        (click)="onUpdate(value, $event)"
+                        class="p-2 font-medium text-blue-600 hover:underline"
+                        >Update</a
+                    >
+                    <a
+                        role="button"
+                        (click)="onDelete(value, $event)"
+                        class="p-2 font-medium text-blue-600 hover:underline"
+                        >Delete</a
+                    >
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@if (totalRecords(); as total) {
+<div class="mt-4">
+    <ca-paginator
+        [options]="paginationOptions()"
+        [total]="totalRecords()"
+        (pageChange)="pageChange.emit($event)"
+    >
+    </ca-paginator>
 </div>
 
-<table class="table-auto">
-    <thead>
-        <tr>
-            @for (field of fieldsToDisplay(); track field) {
-
-            <th
-                class="justify-between"
-                [caClickable]="field.isSortable"
-                (caClick)="sort(field)"
-            >
-                <span>{{ field.name }}</span>
-                @if (sortOption()?.field === field.id) { @if
-                (sortOption()?.order === 'asc') {
-                <span>&darr;</span>
-                } @else {
-                <span>&uarr;</span>
-                } }
-            </th>
-            }
-            <!-- Action buttons -->
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @for(value of values(); track value) {
-        <tr (click)="onRowClick(value)">
-            @for (field of fieldsToDisplay(); track field) {
-            <td>
-                {{ value[field.id] }}
-            </td>
-            }
-            <td>
-                <button (click)="onUpdate(value, $event)">Update</button>
-                <button (click)="onDelete(value, $event)">Delete</button>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
-
-@if (totalRecords(); as total) {
-<ca-paginator
-    [options]="paginationOptions()"
-    [total]="totalRecords()"
-    (pageChange)="pageChange.emit($event)"
->
-</ca-paginator>
 }

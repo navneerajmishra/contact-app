@@ -30,6 +30,9 @@ export type ContactsViewModel = {
     selector: 'ca-contact-list',
     imports: [CommonModule, TableComponent, LoadingIndicatorComponent],
     templateUrl: './contact-list.component.html',
+    host: {
+        class: 'flex flex-col gap-4 h-full'
+    },
     styleUrl: './contact-list.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -86,8 +89,8 @@ export class ContactListComponent {
             id: 'createdOn',
             name: 'Created On',
             type: 'date',
-            isHidden: false,
-            isSortable: true,
+            isHidden: true,
+            isSortable: false,
         },
     ]);
 
@@ -206,8 +209,8 @@ export class ContactListComponent {
 
     protected async onDelete(data: { data: ContactsViewModel }) {
         const confirmed = await this.#confirm.confirm(
-            `Delete ${data.data.name}`,
-            'Are you sure you want to delete this contact?'
+            'Are you sure you want to delete this contact?',
+            data.data.name
         );
         if (confirmed) {
             // TODO: Implement delete

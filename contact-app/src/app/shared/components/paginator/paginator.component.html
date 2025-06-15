@@ -1,17 +1,28 @@
 @let _currentPage = options().pageNumber;
+@let _pageSize = options().pageSize;
+@let _totalRecords = total();
 @let _totalPages = totalPages();
+@let _start = ((_currentPage - 1) * _pageSize) + 1;
+@let _end = _currentPage  === _totalPages ?_totalRecords : (_currentPage * _pageSize);
 
-@if (_currentPage && _totalPages) {
-    <button
-        [disabled]="_currentPage == 1"
-        (click)="pageChanged(_currentPage - 1)">
-        &#8592;
-    </button>
-    <span>{{ _currentPage }} of {{ _totalPages }}</span>
-    <button
-        [disabled]="_currentPage == _totalPages"
-        (click)="pageChanged(_currentPage + 1)">
-        &#8594;
-    </button>
-}
-
+<div class="flex flex-col items-center">
+    <!-- Help text -->
+    <span class="text-sm text-gray-700 dark:text-gray-400">
+        Showing <span class="font-semibold text-gray-900 dark:text-white">{{ _start }}</span> to <span class="font-semibold text-gray-900 dark:text-white">{{ _end }}</span> of <span class="font-semibold text-gray-900 dark:text-white">{{ _totalRecords }}</span> Entries
+    </span>
+    <div class="inline-flex mt-2 xs:mt-0">
+      <!-- Buttons -->
+      <button [disabled]="_currentPage == 1" (click)="pageChanged(_currentPage - 1)" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+          <svg class="w-3.5 h-3.5 me-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
+          </svg>
+          Prev
+      </button>
+      <button [disabled]="_currentPage == _totalPages" (click)="pageChanged(_currentPage + 1)" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+          Next
+          <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+        </svg>
+      </button>
+    </div>
+  </div>

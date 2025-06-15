@@ -9,7 +9,7 @@ import { Component, computed, effect, input, signal } from '@angular/core';
 export class AvatarComponent {
     readonly name = input<string>();
     readonly imageUrl = input<string>();
-    readonly size = input<'sm' | 'md' | 'lg'>('sm');
+    readonly size = input<'xs' | 'sm' | 'md' | 'lg' | 'xl'>('sm');
 
     protected readonly isValidImage = signal<boolean>(false);
     protected readonly initials = computed(() => this.name()?.split(' ').reduce(
