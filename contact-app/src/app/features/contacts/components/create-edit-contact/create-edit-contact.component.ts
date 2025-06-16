@@ -4,13 +4,13 @@ import {
     effect,
     inject,
     input,
-    untracked,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormFieldErrorDirective } from '@shared/directives';
 import { ContactsStore } from '@store/store';
-import { AvatarComponent } from "../../../../shared/components/avatar/avatar.component";
+import { AvatarComponent } from '@shared/components';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'ca-create-edit-contact',
@@ -21,13 +21,15 @@ import { AvatarComponent } from "../../../../shared/components/avatar/avatar.com
 export class CreateEditContactComponent {
     readonly #store = inject(ContactsStore);
     readonly #formBuilder = inject(FormBuilder);
+    readonly #router = inject(Router);
+
     readonly id = input<string | null>(null);
 
     readonly selectedContact = computed(() => {
         const contactId = this.id();
         
         return contactId
-            ? untracked(() => this.#store.contactEntityMap()[contactId])
+            ? this.#store.contactEntityMap()[contactId]
             : null;
     });
 
@@ -38,8 +40,8 @@ export class CreateEditContactComponent {
         ]],
         lastName: [''],
         phone: this.#formBuilder.group({
-            number: ['', [Validators.pattern(/^(?:1[-\s]?)?(?:\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/)]],
-            extension: ['', [Validators.maxLength(5), Validators.pattern(/^\d{1,5}$/)]],
+            number: ['', [Validators.required, Validators.pattern(/^(?:1[-\s]?)?(?:\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/)]],
+            extension: ['', [Validators.maxLength(5), Validators.pattern(/^\d{0,5}$/)]],
         }),
         email: ['', [
             Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
@@ -63,11 +65,29 @@ export class CreateEditContactComponent {
     }
 
     submit() {
-    }
-
-    onImageError() {
-        this.contactForm.get('profilePicture')?.setErrors({
-
+        const id = this.id();
+        if (this.contactForm.invalid) {
+            this.contactForm.markAllAsTouched();
+            return;
+        }
+        const contactToCreateOrUpdate = {
+            id,
+            firstName: this.contactForm.get('firstName')!.value!.trim(),
+            lastName: this.contactForm.get('lastName')?.value?.trim() ?? '',
+            phone: {
+                number: this.contactForm.get('phone.number')!.value!.trim(),
+                extension: this.contactForm.get('phone.extension')?.value?.trim() ?? '',
+            },
+            email: this.contactForm.get('email')?.value?.trim() ?? '',
+            company: this.contactForm.get('company')?.value?.trim() ?? '',
+            jobTitle: this.contactForm.get('jobTitle')?.value?.trim() ?? '',
+            avatar: this.contactForm.get('avatar')?.value?.trim() ?? '',
+        };
+        const response = id ? this.#store.optimisticUpdate(id, contactToCreateOrUpdate) : this.#store.create(contactToCreateOrUpdate);
+        response.then(() => {
+            this.contactForm.reset();
+            this.#router.navigate(['/contacts']);
         })
+        
     }
 }

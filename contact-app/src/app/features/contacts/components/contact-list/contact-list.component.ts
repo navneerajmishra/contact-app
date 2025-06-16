@@ -123,7 +123,7 @@ export class ContactListComponent {
                             value?.toLowerCase().includes(searchString)
                         )
                         ? {
-                              id: contact.id,
+                              id: contact.id!,
                               company: contact.company ?? '',
                               jobTitle: contact.jobTitle ?? '',
                               name: `${contact.firstName} ${
@@ -214,8 +214,7 @@ export class ContactListComponent {
             data.data.name
         );
         if (confirmed) {
-            // TODO: Implement delete
-            console.log('Deleting...');
+            this.#store.optimisticDelete(data.data.id);
         }
     }
 

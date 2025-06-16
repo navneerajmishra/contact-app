@@ -1,22 +1,22 @@
 @if (selectedContact(); as _contact) {
 
-    <div class="divide-y p-4 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <div class="divide-y p-4 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
     
         <div class="flex flex-col items-center pb-10">
             <ca-avatar [size]="'xl'" [imageUrl]="_contact.avatar" [name]="_contact.firstName"></ca-avatar>
-            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{ _contact.firstName }} {{ _contact.lastName }}</h5>
-            <span class="text-sm text-gray-500 dark:text-gray-400">{{ _contact.jobTitle }}</span>
+            <h5 class="mb-1 text-xl font-medium text-gray-900">{{ _contact.firstName }} {{ _contact.lastName }}</h5>
+            <span class="text-sm text-gray-500">{{ _contact.jobTitle }}</span>
         </div>
         <div class="flex flex-col pb-3">
-            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Phone</dt>
+            <dt class="mb-1 text-gray-500 md:text-lg">Phone</dt>
             <dd class="text-lg font-semibold">{{ _contact.phone.number }} x{{ _contact.phone.extension }}</dd>
         </div>
         <div class="flex flex-col pb-3">
-            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Email</dt>
+            <dt class="mb-1 text-gray-500 md:text-lg">Email</dt>
             <dd class="text-lg font-semibold">{{ _contact.email }}</dd>
         </div>
         <div class="flex flex-col py-3">
-            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Company</dt>
+            <dt class="mb-1 text-gray-500 md:text-lg">Company</dt>
             <dd class="text-lg font-semibold">{{ _contact.company }}</dd>
         </div>
     </div>

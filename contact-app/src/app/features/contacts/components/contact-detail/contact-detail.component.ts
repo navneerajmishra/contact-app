@@ -14,9 +14,7 @@ export class ContactDetailComponent {
 
     readonly selectedContact = computed(() => {
         const contactId = this.id();
-        
-        return contactId
-            ? untracked(() => this.#store.contactEntityMap()[contactId])
-            : null;
+
+        return contactId ? this.#store.contactEntityMap()[contactId] : null;
     });
 }

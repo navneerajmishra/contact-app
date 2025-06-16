@@ -29,7 +29,7 @@ import {
 export const config = entityConfig({
     entity: type<Contact>(),
     collection: 'contact',
-    selectId: (contact) => contact.id,
+    selectId: (contact) => contact.id!,
 });
 
 export const ContactsStore = signalStore(
@@ -44,61 +44,34 @@ export const ContactsStore = signalStore(
             );
             patchState(store, addEntities(contacts, config), setFulfilled());
         },
-        async optimisticCreate(contact: Contact) {
-            // Generate a temporary id if not present
-            let tempId = contact.id ?? crypto.randomUUID();
-            const contactWithId = { ...contact, id: tempId };
-
-            // Optimistically add to state
-            patchState(store, addEntity(contactWithId, config));
+        async create(contact: Contact) {
+            if (!contact) {
+                throw new Error('Contact is required');
+            }
 
             try {
                 const created = await firstValueFrom(
-                    contactsService.createContact({
-                        ...contactWithId,
-                        first_name: contactWithId.firstName,
-                        last_name: contactWithId.lastName,
-                        job_title: contactWithId.jobTitle,
-                        created_on: contactWithId.createdOn,
-                        phone: contactWithId.phone.number,
-                    })
+                    contactsService.createOrUpdateContact(contact)
                 );
-
-                // If server returns a new id, update the entity in the store
-                if (created?.id && created.id !== tempId) {
-                    patchState(
-                        store,
-                        updateEntity(
-                            { id: tempId, changes: { id: created.id } },
-                            config
-                        )
-                    );
-                }
+                patchState(store, addEntity(created, config));
             } catch (err) {
-                // Rollback on error
-                patchState(
-                    store,
-                    removeEntity(tempId, config),
-                    setError('Failed to create contact')
-                );
+                patchState(store, setError('Failed to create contact'));
                 throw err;
             }
         },
         async optimisticUpdate(id: string, contact: Contact) {
+            if (!contact || !id) {
+                throw new Error('Contact is required');
+            }
             // Save previous state for rollback
             const prev = store.contactEntityMap()[id];
             patchState(store, upsertEntity(contact, config));
             try {
-                await firstValueFrom(
-                    contactsService.updateContact(id, {
-                        ...contact,
-                        first_name: contact.firstName,
-                        last_name: contact.lastName,
-                        job_title: contact.jobTitle,
-                        created_on: contact.createdOn,
-                        phone: contact.phone.number,
-                    })
+                const updated = await firstValueFrom(
+                    contactsService.createOrUpdateContact(contact)
                 );
+                // 🐛 Api doesn't always update the entity, so we update the entity again in the store.
+                patchState(store, upsertEntity(updated, config));
             } catch (err) {
                 // Rollback on error
                 patchState(
@@ -110,6 +83,9 @@ export const ContactsStore = signalStore(
             }
         },
         async optimisticDelete(id: string) {
+            if (!id) {
+                throw new Error('Contact ID is required');
+            }
             // Save previous state for rollback
             const prev = store.contactEntityMap()[id];
             patchState(store, removeEntity(id, config));
