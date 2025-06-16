@@ -48,10 +48,6 @@ To execute unit tests:
 ng test
 ```
 
-### Formatting HTML with Angular Control Flow
-
-To format HTML files (including Angular control flow blocks like `@if`, `@for`), use Prettier v3.2.0 or newer:
-
 ```sh
 npx prettier --write "src/**/*.html"
 ```
