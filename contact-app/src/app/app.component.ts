@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { DialogComponent } from './shared/components/dialog-host/dialog-host.component';
+import { DialogComponent } from './shared/components/dialog-host/dialog.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { ErrorComponent } from "./core/components/error/error.component";
 
