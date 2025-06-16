@@ -71,7 +71,3 @@ npx prettier --write "src/**/*.html"
 - Confirmation dialogs
 
 ---
-
-## License
-
-MIT
