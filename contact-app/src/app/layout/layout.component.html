@@ -4,13 +4,12 @@
 <div class="flex flex-col flex-1 overflow-hidden">
 
     <!-- Navbar -->
-    <header class="flex items-center justify-between bg-white shadow px-4 h-16">
-        <h1 class="text-xl font-semibold">Contacts App</h1>
+    <header class="flex items-center justify-between bg-white shadow px-4 h-16" role="banner">
+        <h1 class="text-xl font-semibold" id="app-title" tabindex="-1">Contacts App</h1>
     </header>
 
     <!-- Router Outlet (Main Content) -->
-    <main class="flex-1 overflow-y-auto p-6">
+    <main class="flex-1 overflow-y-auto p-6" role="main" aria-labelledby="app-title">
         <router-outlet></router-outlet>
     </main>
 </div>
-  

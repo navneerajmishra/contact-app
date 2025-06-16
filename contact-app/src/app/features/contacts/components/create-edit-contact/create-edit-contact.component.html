@@ -3,8 +3,13 @@
 <form
     [formGroup]="contactForm"
     class="w-auto flex flex-col gap-8 justify-center bg-white p-8"
+    aria-labelledby="contact-form-title"
+    autocomplete="off"
+    novalidate
 >
-    <h2>@if (!contact) { Create } @else { Update } Contact</h2>
+    <h2 id="contact-form-title" tabindex="-1">
+        @if (!contact) { Create } @else { Update } Contact
+    </h2>
 
     <div class="grid md:grid-cols-2 md:gap-6">
         <div class="relative z-0 w-full mb-5 group">
@@ -15,6 +20,9 @@
                 name="firstName"
                 id="firstName"
                 class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                required
+                aria-required="true"
+                autocomplete="given-name"
             />
             <label
                 for="firstName"
@@ -44,10 +52,15 @@
             <input
                 caFormFieldError
                 formControlName="number"
-                type="text"
+                type="tel"
                 name="number"
                 id="number"
                 class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                required
+                aria-required="true"
+                autocomplete="tel"
+                inputmode="tel"
+                aria-label="Phone number"
             />
             <label
                 for="number"
@@ -63,6 +76,8 @@
                 name="extension"
                 id="extension"
                 class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                aria-label="Phone extension"
+                autocomplete="off"
             />
             <label
                 for="extension"
@@ -124,10 +139,13 @@
             <input
                 caFormFieldError
                 formControlName="avatar"
-                type="text"
+                type="url"
                 name="avatar"
                 id="avatar"
                 class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                aria-label="Profile image URL"
+                autocomplete="url"
+                inputmode="url"
             />
             <label
                 for="avatar"
@@ -139,6 +157,7 @@
             <ca-avatar
                 [name]="selectedContact()?.firstName"
                 [imageUrl]="contactForm.get('avatar')?.value ?? ''"
+                aria-label="Avatar preview"
             ></ca-avatar>
         </div>
     </div>
@@ -148,6 +167,8 @@
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 disabled:bg-blue-200 focus:outline-none"
             [disabled]="!contactForm.valid"
             (click)="submit()"
+            type="submit"
+            aria-label="@if (!contact) { Create } @else { Update } contact"
         >
             @if (!contact) { Create } @else { Update }
         </button>

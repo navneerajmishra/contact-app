@@ -1,10 +1,15 @@
 @if (isValidImage()) {
-    <img class="size() rounded-full" [src]="imageUrl()" alt="name()" />
+    <img
+        class="{{ size() }} rounded-full"
+        [src]="imageUrl()"
+        [alt]="name() ? name() : 'User avatar'"
+        role="img"
+    />
 } @else {
     <div
-        class="relative inline-flex items-center justify-center {{
-            size()
-        }} overflow-hidden bg-gray-100 rounded-full"
+        class="relative inline-flex items-center justify-center {{ size() }} overflow-hidden bg-gray-100 rounded-full"
+        role="img"
+        [attr.aria-label]="name() ? name() : 'User avatar'"
     >
         <span class="font-medium text-gray-600">{{ initials() }}</span>
     </div>

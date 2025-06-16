@@ -1,11 +1,17 @@
-<div class="backdrop" (click)="close(false)"></div>
-<div>
+<div class="backdrop" (click)="close(false)" tabindex="-1" aria-hidden="true"></div>
+<div
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="confirm-dialog-title"
+    aria-describedby="confirm-dialog-message"
+>
     <div class="relative bg-white rounded-lg shadow-sm">
         <button
             type="button"
             class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
             data-modal-hide="popup-modal"
             (click)="close(false)"
+            aria-label="Close dialog"
         >
             <svg
                 class="w-3 h-3"
@@ -41,11 +47,14 @@
                 />
             </svg>
             <h3
+                id="confirm-dialog-title"
                 class="mb-5 text-lg font-normal text-gray-700"
+                tabindex="-1"
             >
                 {{ title() }}
             </h3>
             <h2
+                id="confirm-dialog-message"
                 class="mb-5 text-md font-normal text-gray-500"
             >
                 {{ message() }}
@@ -55,6 +64,7 @@
                 type="button"
                 class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
                 (click)="close(true)"
+                aria-label="Confirm action"
             >
                 Yes, I'm sure
             </button>
@@ -63,6 +73,7 @@
                 type="button"
                 class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
                 (click)="close(false)"
+                aria-label="Cancel action"
             >
                 No, cancel
             </button>

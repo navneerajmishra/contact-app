@@ -1,5 +1,5 @@
 <div class="p-4 bg-white sticky top-0 flex flex-row-reverse">
-    <label for="table-search" class="sr-only">Search</label>
+    <label for="table-search" class="sr-only">Search table</label>
     <div class="relative mt-1">
         <div
             class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
@@ -26,24 +26,26 @@
             id="table-search"
             class="block py-2 ps-10 pe-3 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Search for items"
+            aria-label="Search table"
         />
     </div>
 </div>
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <table
         class="w-full text-sm text-left rtl:text-right text-gray-500"
+        aria-label="Contacts data table"
     >
         <thead
             class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50"
         >
             <tr>
                 @for (field of fieldsToDisplay(); track field) {
-
                 <th
                     scope="col"
                     class="px-6 py-3"
                     [caClickable]="field.isSortable"
                     (caClick)="sort(field)"
+                    [attr.aria-sort]="sortOption()?.field === field.id ? (sortOption()?.order === 'asc' ? 'ascending' : 'descending') : undefined"
                 >
                     <span class="flex items-center" [ngClass]="{'text-gray-800' : sortOption()?.field === field.id}">
                         {{ field.name }}
@@ -79,6 +81,8 @@
                 [caClickable]="true"
                 (caClick)="onRowClick(value)"
                 class="bg-white border-b border-gray-200 hover:bg-gray-50"
+                tabindex="0"
+                aria-label="Table row, click for details"
             >
                 @for (field of fieldsToDisplay(); track field) {
                 <td class="px-6 py-4" [ngClass]="{'text-gray-700' : sortOption()?.field === field.id}">
@@ -88,16 +92,18 @@
                 <td class="px-6 py-4 divide-x">
                     <a
                         role="button"
+                        tabindex="0"
                         (click)="onUpdate(value, $event)"
                         class="p-2 font-medium text-blue-600 hover:underline"
-                        >Update</a
-                    >
+                        aria-label="Update row"
+                    >Update</a>
                     <a
                         role="button"
+                        tabindex="0"
                         (click)="onDelete(value, $event)"
                         class="p-2 font-medium text-blue-600 hover:underline"
-                        >Delete</a
-                    >
+                        aria-label="Delete row"
+                    >Delete</a>
                 </td>
             </tr>
             }
@@ -113,5 +119,4 @@
     >
     </ca-paginator>
 </div>
-
 }

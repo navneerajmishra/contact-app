@@ -3,21 +3,24 @@
 ((_currentPage - 1) * _pageSize) + 1; @let _end = _currentPage === _totalPages
 ?_totalRecords : (_currentPage * _pageSize);
 
-<div class="flex flex-col items-center">
+<nav class="flex flex-col items-center" aria-label="Pagination Navigation">
     <!-- Help text -->
-    <span class="text-sm text-gray-700">
+    <span class="text-sm text-gray-700" id="pagination-summary">
         Showing <span class="font-semibold text-gray-900">{{ _start }}</span> to
         <span class="font-semibold text-gray-900">{{ _end }}</span>
         of
         <span class="font-semibold text-gray-900">{{ _totalRecords }}</span>
         Entries
     </span>
-    <div class="inline-flex mt-2 xs:mt-0">
-        <!-- Buttons -->
+    <div class="inline-flex mt-2 xs:mt-0" role="group" aria-label="Pagination Controls">
+        <!-- Prev Button -->
         <button
+            type="button"
             [disabled]="_currentPage == 1"
             (click)="pageChanged(_currentPage - 1)"
-            class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900"
+            class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            aria-label="Previous Page"
+            aria-describedby="pagination-summary"
         >
             <svg
                 class="w-3.5 h-3.5 me-2 rtl:rotate-180"
@@ -36,10 +39,14 @@
             </svg>
             Prev
         </button>
+        <!-- Next Button -->
         <button
+            type="button"
             [disabled]="_currentPage == _totalPages"
             (click)="pageChanged(_currentPage + 1)"
-            class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900"
+            class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            aria-label="Next Page"
+            aria-describedby="pagination-summary"
         >
             Next
             <svg
@@ -59,4 +66,4 @@
             </svg>
         </button>
     </div>
-</div>
+</nav>

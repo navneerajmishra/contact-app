@@ -1,31 +1,33 @@
 @let _contacts = paginatedContacts();
 @let _loadingStatus = loadingStatus();
 
-<div class="flex flex-row-reverse">
+<div class="flex flex-row-reverse" role="region" aria-label="Contact Actions">
     <button
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none"
         (click)="createContact()"
+        type="button"
+        aria-label="Create new contact"
     >
         Create new
     </button>
 </div>
 @if (_loadingStatus === 'fulfilled') {
-<ca-table
-    [key]="'id'"
-    [fields]="columns()"
-    [values]="_contacts"
-    [totalRecords]="filteredContactList().length"
-    [paginationOptions]="paginationOptions()"
-    [sortOption]="sortOption()"
-    [(searchString)]="searchString"
-    (rowClick)="onRowClick($event)"
-    (pageChange)="onPageChange($event)"
-    (searchChange)="onSearchChange($event)"
-    (sortChange)="onSortChange($event)"
-    (delete)="onDelete($event)"
-    (update)="onUpdate($event)"
->
-</ca-table>
+    <ca-table
+        [key]="'id'"
+        [fields]="columns()"
+        [values]="_contacts"
+        [totalRecords]="filteredContactList().length"
+        [paginationOptions]="paginationOptions()"
+        [sortOption]="sortOption()"
+        [(searchString)]="searchString"
+        (rowClick)="onRowClick($event)"
+        (pageChange)="onPageChange($event)"
+        (searchChange)="onSearchChange($event)"
+        (sortChange)="onSortChange($event)"
+        (delete)="onDelete($event)"
+        (update)="onUpdate($event)"
+    >
+    </ca-table>
 }
 
-<ca-loading-indicator [show]="_loadingStatus === 'pending'" />
+<ca-loading-indicator [show]="_loadingStatus === 'pending'" aria-live="polite" />

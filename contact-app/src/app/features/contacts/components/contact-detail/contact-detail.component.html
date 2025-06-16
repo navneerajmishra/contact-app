@@ -1,25 +1,51 @@
 @if (selectedContact(); as _contact) {
 
-    <div class="divide-y p-4 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
-    
+    <section
+        class="divide-y p-4 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm"
+        aria-labelledby="contact-detail-title"
+        role="region"
+    >
         <div class="flex flex-col items-center pb-10">
-            <ca-avatar [size]="'xl'" [imageUrl]="_contact.avatar" [name]="_contact.firstName"></ca-avatar>
-            <h5 class="mb-1 text-xl font-medium text-gray-900">{{ _contact.firstName }} {{ _contact.lastName }}</h5>
+            <ca-avatar
+                [size]="'xl'"
+                [imageUrl]="_contact.avatar"
+                [name]="_contact.firstName"
+                aria-label="Avatar"
+            ></ca-avatar>
+            <h2
+                id="contact-detail-title"
+                class="mb-1 text-xl font-medium text-gray-900"
+                tabindex="-1"
+            >
+                {{ _contact.firstName }} {{ _contact.lastName }}
+            </h2>
             <span class="text-sm text-gray-500">{{ _contact.jobTitle }}</span>
         </div>
-        <div class="flex flex-col pb-3">
-            <dt class="mb-1 text-gray-500 md:text-lg">Phone</dt>
-            <dd class="text-lg font-semibold">{{ _contact.phone.number }} x{{ _contact.phone.extension }}</dd>
-        </div>
-        <div class="flex flex-col pb-3">
-            <dt class="mb-1 text-gray-500 md:text-lg">Email</dt>
-            <dd class="text-lg font-semibold">{{ _contact.email }}</dd>
-        </div>
-        <div class="flex flex-col py-3">
-            <dt class="mb-1 text-gray-500 md:text-lg">Company</dt>
-            <dd class="text-lg font-semibold">{{ _contact.company }}</dd>
-        </div>
-    </div>
+        <dl class="divide-y">
+            <div class="flex flex-col pb-3">
+                <dt class="mb-1 text-gray-500 md:text-lg">Phone</dt>
+                <dd class="text-lg font-semibold">
+                    {{ _contact.phone.number }}
+                    @if (_contact.phone.extension) {
+                        <span>ext. {{ _contact.phone.extension }}</span>
+                    }
+                    
+                </dd>
+            </div>
+            <div class="flex flex-col pb-3">
+                <dt class="mb-1 text-gray-500 md:text-lg">Email</dt>
+                <dd class="text-lg font-semibold">
+                    <a href="mailto:{{ _contact.email }}" class="underline text-blue-600">
+                        {{ _contact.email }}
+                    </a>
+                </dd>
+            </div>
+            <div class="flex flex-col py-3">
+                <dt class="mb-1 text-gray-500 md:text-lg">Company</dt>
+                <dd class="text-lg font-semibold">{{ _contact.company }}</dd>
+            </div>
+        </dl>
+    </section>
 }
 
 

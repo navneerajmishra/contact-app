@@ -1,11 +1,10 @@
 import { Component, effect, inject } from '@angular/core';
-import { ToastComponent } from '@shared/components/toast/toast.component';
 import { ToastService } from '@shared/services';
 import { ContactsStore } from '@store/store';
 
 @Component({
   selector: 'ca-error',
-  template: './error.component.html',
+  template: '',
 })
 export class ErrorComponent {
   readonly #store = inject(ContactsStore);
