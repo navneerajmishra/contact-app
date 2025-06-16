@@ -13,19 +13,12 @@ export type Phone = {
 
 export type Contact = {
     id: string;
-    // req, min
-    phone: Phone; // TODO: Could be of type PhoneNumber
-    // req, 
+    phone: Phone;
     firstName: string;
-    // 
-    lastName?: string; // A person may not have last name
-    // url only
+    lastName?: string;
     avatar?: string;
-    // email pattern
     email?: string;
-    // 
     company?: string;
-    // 
     jobTitle?: string; 
     createdOn?: Date;
 };

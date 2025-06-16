@@ -12,21 +12,3 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
 }
-
-.dialog {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.actions {
-    margin-top: 1.5rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}

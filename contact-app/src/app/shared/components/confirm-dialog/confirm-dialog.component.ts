@@ -2,6 +2,7 @@ import {
     ChangeDetectionStrategy,
     Component,
     input,
+    output,
 } from '@angular/core';
 import { trigger, style, transition, animate } from '@angular/animations';
 
@@ -32,9 +33,9 @@ import { trigger, style, transition, animate } from '@angular/animations';
 export class ConfirmDialogComponent {
     readonly title = input.required<string>();
     readonly message = input.required<string>();
-    readonly onClose = input<(confirmed: boolean) => void>();
+    readonly onClose = output<boolean>();
 
     close(confirmed: boolean) {
-        this.onClose()?.(confirmed);
+        this.onClose.emit(confirmed);
     }
 }

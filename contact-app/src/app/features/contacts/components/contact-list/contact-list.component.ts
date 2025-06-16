@@ -3,6 +3,7 @@ import {
     Component,
     Signal,
     computed,
+    effect,
     inject,
     signal,
 } from '@angular/core';

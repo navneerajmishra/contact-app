@@ -1,4 +1,5 @@
 import {
+    ComponentRef,
     EnvironmentInjector,
     Injectable,
     ViewContainerRef,
@@ -7,13 +8,10 @@ import {
 } from '@angular/core';
 import { ConfirmDialogComponent } from '@shared/components';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class ConfirmDialogService {
     private containerRef?: ViewContainerRef;
-
-    constructor(private injector: EnvironmentInjector) {}
+    componentRef?: ComponentRef<ConfirmDialogComponent>;
 
     setContainerRef(ref: ViewContainerRef) {
         this.containerRef = ref;
@@ -25,19 +23,13 @@ export class ConfirmDialogService {
         }
 
         return new Promise<boolean>((resolve) => {
-            const componentRef = createComponent(ConfirmDialogComponent, {
-                environmentInjector: this.injector,
-                elementInjector: this.containerRef!.injector,
-            });
-
-            componentRef.setInput('title', title);
-            componentRef.setInput('message', message);
-            componentRef.setInput('onClose', (result: boolean) => {
-                componentRef.destroy();
+            this.componentRef = this.containerRef?.createComponent(ConfirmDialogComponent);
+            this.componentRef?.setInput('title', title);
+            this.componentRef?.setInput('message', message);
+            this.componentRef?.instance.onClose.subscribe(result => {
+                this.componentRef?.destroy();
                 resolve(result);
-            });
-
-            this.containerRef!.insert(componentRef.hostView);
+            })
         });
     }
 }

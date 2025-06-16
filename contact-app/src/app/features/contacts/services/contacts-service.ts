@@ -2,23 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { API_URL } from '../../../api-url';
 import { Contact, Phone } from '../../../store/model/contact';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 interface ContactApiModel {
     id: string;
-    // req, min
-    phone: string; // TODO: Could be of type PhoneNumber
-    // req,
+    phone: string;
     first_name: string;
-    //
-    last_name?: string; // A person may not have last name
-    // url only
+    last_name?: string;
     avatar?: string;
-    // email pattern
     email?: string;
-    //
     company?: string;
-    //
     job_title?: string;
     created_on?: Date;
 }
@@ -56,19 +49,45 @@ export class ContactsService {
         );
     }
 
-    createContact(contact: Contact): Observable<Contact> {
-        return this.#http.post<Contact>(this.#baseUrl, JSON.stringify(contact));
+    createContact(contact: ContactApiModel): Observable<Contact> {
+        return this.#http.post<ContactApiModel>(this.#baseUrl, JSON.stringify(contact)).pipe(
+            map((createdContact: ContactApiModel): Contact => ({
+                ...createdContact,
+                firstName: createdContact.first_name,
+                lastName: createdContact.last_name,
+                jobTitle: createdContact.job_title,
+                createdOn: createdContact.created_on,
+                phone: this.getPhoneNumber(createdContact.phone),
+            })));
     }
 
-    updateContact(id: string, contact: Contact): Observable<Contact> {
-        return this.#http.put<Contact>(
+    updateContact(id: string, contact: ContactApiModel): Observable<Contact> {
+        return this.#http.put<ContactApiModel>(
             `${this.#baseUrl}/${id}`,
             JSON.stringify(contact)
+        ).pipe(
+            map((updatedContact: ContactApiModel): Contact => ({
+                ...updatedContact,
+                firstName: updatedContact.first_name,
+                lastName: updatedContact.last_name,
+                jobTitle: updatedContact.job_title,
+                createdOn: updatedContact.created_on,
+                phone: this.getPhoneNumber(updatedContact.phone),
+            }))
         );
     }
 
-    deleteContact(id: string): Observable<unknown> {
-        return this.#http.delete(`${this.#baseUrl}/${id}`);
+    deleteContact(id: string): Observable<Contact> {
+        return this.#http.delete<ContactApiModel>(`${this.#baseUrl}/${id}`).pipe(
+            map((deletedContact: ContactApiModel): Contact => ({
+                ...deletedContact,
+                firstName: deletedContact.first_name,
+                lastName: deletedContact.last_name,
+                jobTitle: deletedContact.job_title,
+                createdOn: deletedContact.created_on,
+                phone: this.getPhoneNumber(deletedContact.phone),
+            })),
+        );
     }
 
     getPhoneNumber(phoneNumberWithExtension: string): Phone {

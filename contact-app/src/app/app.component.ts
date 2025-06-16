@@ -1,28 +1,16 @@
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    Component,
-    ViewChild,
-    inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { DialogHostComponent } from './shared/components/dialog-host/dialog-host.component';
-import { ConfirmDialogService } from '@shared/services';
+import { DialogComponent } from './shared/components/dialog-host/dialog-host.component';
+import { ToastComponent } from './shared/components/toast/toast.component';
+import { ErrorComponent } from "./core/components/error/error.component";
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, DialogHostComponent],
+    imports: [RouterOutlet, DialogComponent, ToastComponent, ErrorComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements AfterViewInit {
-    @ViewChild('host', { static: true }) host!: DialogHostComponent;
-
-    readonly #dialogService = inject(ConfirmDialogService);
+export class AppComponent {
     title = 'contact-app';
-
-    ngAfterViewInit() {
-        this.#dialogService.setContainerRef(this.host.container);
-    }
 }

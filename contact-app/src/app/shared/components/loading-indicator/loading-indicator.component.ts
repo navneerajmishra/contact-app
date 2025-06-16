@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { RequestStatus } from '@shared/models';
 
 @Component({
     selector: 'ca-loading-indicator',
@@ -9,5 +8,5 @@ import { RequestStatus } from '@shared/models';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingIndicatorComponent {
-    readonly requestStatus = input.required<RequestStatus>();
+    readonly show = input.required<boolean>();
 }
