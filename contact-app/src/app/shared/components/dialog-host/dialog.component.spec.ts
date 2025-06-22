@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DialogComponent } from './dialog.component';
+import { ConfirmDialogService } from '@shared/services';
 
 describe('DialogHostComponent', () => {
   let component: DialogComponent;
@@ -8,7 +9,8 @@ describe('DialogHostComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DialogComponent]
+      imports: [DialogComponent],
+      providers: [ConfirmDialogService]
     })
     .compileComponents();
 

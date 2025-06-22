@@ -6,7 +6,9 @@ describe('ConfirmDialogService', () => {
   let service: ConfirmDialogService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [ConfirmDialogService]
+    });
     service = TestBed.inject(ConfirmDialogService);
   });
 

@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClickableDirective } from './clickable.directive';
+import { By } from '@angular/platform-browser';
 
 @Component({
+  imports: [ClickableDirective],
   template: `<div [caClickable]="isClickable" (caClick)="clicked($event)"></div>`
 })
 class TestHostComponent {
@@ -16,7 +18,7 @@ describe('ClickableDirective', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ClickableDirective, TestHostComponent]
+      imports: [ClickableDirective, TestHostComponent]
     });
     fixture = TestBed.createComponent(TestHostComponent);
     host = fixture.componentInstance;
@@ -24,7 +26,7 @@ describe('ClickableDirective', () => {
   });
 
   it('should emit caClick when clickable and clicked', () => {
-    const div = fixture.nativeElement.querySelector('div');
+    const div = fixture.debugElement.query(By.directive(ClickableDirective)).nativeElement;
     div.click();
     expect(host.clicked).toHaveBeenCalled();
   });

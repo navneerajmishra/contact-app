@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateEditContactComponent } from './create-edit-contact.component';
+import { ContactsStore } from '@store/store';
+import { MockContactsStore } from '@store/mock/contacts.store.mock';
 
 describe('CreateEditContactComponent', () => {
   let component: CreateEditContactComponent;
@@ -8,7 +10,11 @@ describe('CreateEditContactComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateEditContactComponent]
+      imports: [CreateEditContactComponent],
+      providers: [{
+        provide: ContactsStore,
+        useClass: MockContactsStore
+    }]
     })
     .compileComponents();
 
