@@ -18,9 +18,11 @@ jobs:
           node-version: 20
 
       - name: "Install dependencies"
+        working-directory: contact-app
         run: npm install
 
       - name: "Run tests"
+        working-directory: contact-app
         run: npm run test:ci
 
       - name: Build Angular app to prod
