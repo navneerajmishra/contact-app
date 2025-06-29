@@ -11,7 +11,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoadingIndicatorComponent, TableComponent } from '@shared/components';
 import { ContactsStore } from '@store/store';
-import { Contact } from '@store/model';
+import { Contact, RequestStatus } from '@store/model';
 import { filterMap, sortByStringField } from '@shared/utilities';
 import { Field, PaginationOption, SortOption, SortOrder } from '@shared/models';
 import { ConfirmDialogService } from '@shared/services';
@@ -42,6 +42,8 @@ export class ContactListComponent {
     readonly #router = inject(Router);
     readonly #activatedRoute = inject(ActivatedRoute);
     readonly #confirm = inject(ConfirmDialogService);
+
+    loadingStatus: Signal<RequestStatus>;
 
     protected readonly columns: Signal<Field<ContactsViewModel>[]> = signal([
         {
@@ -95,7 +97,7 @@ export class ContactListComponent {
         },
     ]);
 
-    protected loadingStatus = this.#store.requestStatus;
+    
     protected readonly searchString = signal<string>('');
     protected readonly paginationOptions = signal<PaginationOption>({
         pageNumber: 1,
@@ -158,6 +160,7 @@ export class ContactListComponent {
         });
 
     constructor() {
+        this.loadingStatus = this.#store.requestStatus;
         this.#activatedRoute.queryParamMap.subscribe((params) => {
             const pageNumber = params.get('pn') ?? 1;
             const pageSize = params.get('ps') ?? 10;
@@ -173,20 +176,21 @@ export class ContactListComponent {
             }));
             this.searchString.set(params.get('ss') ?? '');
         });
+        
     }
 
     protected createContact() {
-        this.#router.navigate(['/', 'new']);
+        this.#router.navigate(['new'], {relativeTo: this.#activatedRoute});
     }
 
     protected onRowClick(data: { data: ContactsViewModel }) {
         // Todo open view contact detail component
-        this.#router.navigate(['/', 'contacts', data.data.id]);
+        this.#router.navigate([data.data.id], {relativeTo: this.#activatedRoute});
     }
 
     protected onUpdate(data: { data: ContactsViewModel }) {
         // Todo open view contact detail component
-        this.#router.navigate(['/', 'edit', data.data.id]);
+        this.#router.navigate(['edit', data.data.id], {relativeTo: this.#activatedRoute});
     }
 
     protected onPageChange(pageNumber: number | null) {

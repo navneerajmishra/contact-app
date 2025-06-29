@@ -4,10 +4,9 @@ import { ContactDetailComponent } from './contact-detail.component';
 import { ContactsStore } from '@store/store';
 import { MockContactsStore } from '@store/mock/contacts.store.mock';
 
-describe('ContactDetailComponent', () => {
+fdescribe('ContactDetailComponent', () => {
   let component: ContactDetailComponent;
   let fixture: ComponentFixture<ContactDetailComponent>;
-  let store;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -47,4 +46,12 @@ describe('ContactDetailComponent', () => {
     }
     );
   });
+
+  it('should display not found message if user not found', () => {
+    fixture.componentRef.setInput('id', 100);
+    fixture.detectChanges();
+
+    const debugElement = fixture.nativeElement as HTMLElement;
+    expect(debugElement.textContent).toContain(`Couldn't find the user.`);
+  })
 });

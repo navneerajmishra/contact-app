@@ -42,12 +42,17 @@ export class MockContactsStore {
 
   // Mocked request status
   requestStatus = signal<'idle' | 'pending' | 'fulfilled' | { error: string }>('idle');
-
+  
   
   // Computed properties
   error = computed(() => {
     const status = this.requestStatus();
     return typeof status === 'object' ? status.error : null;
+  });
+
+  isFulfilled = computed(() => {
+    const status = this.requestStatus();
+    return status === 'fulfilled';
   });
 
 

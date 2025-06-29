@@ -8,22 +8,15 @@ export const routes: Routes = [
         pathMatch: 'full',
     },
     {
-        path: '',
+        path: 'contacts',
         component: LayoutComponent,
         children: [
             {
-                path: 'contacts',
+                path: '',
                 loadComponent: () =>
                     import(
                         './features/contacts/components/contact-list/contact-list.component'
                     ).then((c) => c.ContactListComponent),
-            },
-            {
-                path: 'contacts/:id',
-                loadComponent: () =>
-                    import(
-                        './features/contacts/components/contact-detail/contact-detail.component'
-                    ).then((c) => c.ContactDetailComponent),
             },
             {
                 path: 'new',
@@ -31,6 +24,13 @@ export const routes: Routes = [
                     import(
                         './features/contacts/components/create-edit-contact/create-edit-contact.component'
                     ).then((c) => c.CreateEditContactComponent),
+            },
+            {
+                path: ':id',
+                loadComponent: () =>
+                    import(
+                        './features/contacts/components/contact-detail/contact-detail.component'
+                    ).then((c) => c.ContactDetailComponent),
             },
             {
                 path: 'edit/:id',
@@ -48,4 +48,4 @@ export const routes: Routes = [
                 (c) => c.NotFoundComponent
             ),
     },
-];
+]
