@@ -4,7 +4,7 @@ import { NotFoundComponent } from './not-found.component';
 import { ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
-fdescribe('NotFoundComponent', () => {
+describe('NotFoundComponent', () => {
   let component: NotFoundComponent;
   let fixture: ComponentFixture<NotFoundComponent>;
 

@@ -4,7 +4,7 @@ import { ContactDetailComponent } from './contact-detail.component';
 import { ContactsStore } from '@store/store';
 import { MockContactsStore } from '@store/mock/contacts.store.mock';
 
-fdescribe('ContactDetailComponent', () => {
+describe('ContactDetailComponent', () => {
   let component: ContactDetailComponent;
   let fixture: ComponentFixture<ContactDetailComponent>;
 
